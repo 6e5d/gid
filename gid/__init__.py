@@ -5,21 +5,37 @@ if "XDG_SRC_HOME" in os.environ:
 	root = os.environ["XDG_SRC_HOME"]
 
 def path2gid(proj):
-	return str(proj.relative_to(root))
+	result = []
+	for idx, path in enumerate(proj.relative_to(root).parts):
+		assert len(path) > 0
+		word = path.lower()
+		if idx == 0:
+			for field in reversed(list(word.split("."))):
+				assert field.isalnum()
+				result.append(field)
+			continue
+		else:
+			assert path.isalnum()
+		result.append(word)
+	assert result[0][0].islower()
+	return result
 
-def gid2c(s, style, cident):
-	s = s.replace(".", "")
-	match style:
-		case "camel":
-			s = s.split("/")
-			s = [x.capitalize() for x in s]
-			s = "".join(s)
-			if cident and s[0].isdigit():
-				s = f"c{s}"
-		case "snake":
-			s = s.replace("/", "_")
-			if cident and s[0].isdigit():
-				s = f"c_{s}"
-		case x:
-			raise Exception(x)
-	return s
+def gid2c(gid, style):
+	assert len(gid) >= 1
+	result = ""
+	for idx, word in enumerate(gid):
+		assert len(word) > 0
+		if idx == 0:
+			assert word[0].islower()
+		else:
+			if style == "camel" and word[0].isdigit():
+				result += "_"
+		if style == "camel":
+			result += word.capitalize()
+		elif style == "snake":
+			if idx > 0:
+				result += "_"
+			result += f"{word}"
+		else:
+			raise Exception(style)
+	return result
