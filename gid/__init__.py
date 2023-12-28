@@ -6,6 +6,8 @@ if "XDG_SRC_HOME" in os.environ:
 
 def path2gid(proj):
 	result = []
+	if not proj.is_relative_to(root):
+		return None
 	for idx, path in enumerate(proj.relative_to(root).parts):
 		assert len(path) > 0
 		word = path.lower()
@@ -21,6 +23,7 @@ def path2gid(proj):
 	return result
 
 def gid2c(gid, style):
+	assert isinstance(gid, list)
 	assert len(gid) >= 1
 	result = ""
 	for idx, word in enumerate(gid):
