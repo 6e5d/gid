@@ -1,8 +1,16 @@
+from pathlib import Path
 import os
 
 root = "/usr/local/src"
 if "XDG_SRC_HOME" in os.environ:
 	root = os.environ["XDG_SRC_HOME"]
+
+def gid2path(gid):
+	assert isinstance(gid, list) or isinstance(gid, tuple)
+	p = Path(root)
+	for seg in gid:
+		p = p / seg
+	return p
 
 def path2gid(proj):
 	result = []
