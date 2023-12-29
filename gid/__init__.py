@@ -7,8 +7,8 @@ if "XDG_SRC_HOME" in os.environ:
 
 def gid2path(gid):
 	assert isinstance(gid, list) or isinstance(gid, tuple)
-	p = Path(root)
-	for seg in gid:
+	p = Path(root) / f"{gid[1]}.{gid[0]}"
+	for seg in gid[2:]:
 		p = p / seg
 	return p
 
